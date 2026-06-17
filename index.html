@@ -9,90 +9,61 @@
 
   body {
     overflow: hidden;
-    width: 100vw;
-    height: 100vh;
-    background: radial-gradient(ellipse at 28% 38%, #0e0b22 0%, #060410 60%, #000206 100%);
+    width: 100vw; height: 100vh;
+    background: radial-gradient(ellipse at 22% 32%, #08061a 0%, #030210 55%, #010108 100%);
   }
 
-  canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    display: block;
-  }
+  canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: block; }
   #stars { z-index: 0; }
   #bg    { z-index: 1; }
   #stage { z-index: 2; cursor: crosshair; }
 
   #toggle {
-    position: fixed;
-    bottom: 24px; right: 24px;
-    z-index: 20;
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.18);
-    background: rgba(14,10,34,0.55);
-    backdrop-filter: blur(12px);
-    color: rgba(255,255,255,0.6);
-    font-size: 17px;
-    cursor: pointer;
+    position: fixed; bottom: 24px; right: 24px; z-index: 20;
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(8,6,22,0.6); backdrop-filter: blur(12px);
+    color: rgba(255,255,255,0.5); font-size: 17px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    transition: background 0.2s, color 0.2s;
   }
-  #toggle:hover { background: rgba(120,90,255,0.25); border-color: rgba(140,110,255,0.4); color: #fff; }
-  #toggle.active { background: rgba(120,90,255,0.3); border-color: rgba(160,130,255,0.5); color: #fff; }
+  #toggle:hover, #toggle.active {
+    background: rgba(90,60,200,0.3); border-color: rgba(120,90,255,0.4); color: #fff;
+  }
 
   #panel {
-    position: fixed;
-    bottom: 78px; right: 24px;
-    z-index: 20;
-    width: 230px;
-    background: rgba(10,7,26,0.80);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 18px;
+    position: fixed; bottom: 78px; right: 24px; z-index: 20;
+    width: 234px;
+    background: rgba(6,4,18,0.85); backdrop-filter: blur(22px);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 18px;
     padding: 18px 18px 14px;
-    color: rgba(255,255,255,0.85);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 12px;
-    opacity: 0;
-    transform: translateY(10px) scale(0.97);
-    pointer-events: none;
+    color: rgba(255,255,255,0.82);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 12px;
+    opacity: 0; transform: translateY(10px) scale(0.97); pointer-events: none;
     transition: opacity 0.22s ease, transform 0.22s ease;
   }
   #panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
 
-  #ball-count { font-size: 11px; color: rgba(255,255,255,0.28); margin-bottom: 12px; letter-spacing: 0.04em; }
+  #ball-count { font-size: 11px; color: rgba(255,255,255,0.22); margin-bottom: 12px; letter-spacing: 0.05em; }
 
   .btn-row { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 14px; }
   button.pill {
-    font: inherit; font-size: 11px;
-    padding: 5px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.13);
-    background: rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.7);
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    font: inherit; font-size: 11px; padding: 5px 10px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.11); background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.65); cursor: pointer; transition: background 0.15s;
   }
-  button.pill:hover { background: rgba(120,90,255,0.22); border-color: rgba(140,110,255,0.35); color: #fff; }
+  button.pill:hover { background: rgba(90,60,200,0.22); border-color: rgba(120,90,255,0.32); color: #fff; }
+  button.pill.on { background: rgba(90,60,200,0.28); border-color: rgba(130,100,255,0.45); color: rgba(200,180,255,1); }
 
   .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .slider-row label { font-size: 11px; color: rgba(255,255,255,0.38); flex: none; width: 52px; letter-spacing: 0.03em; }
-  .slider-row input[type=range] { flex: 1; accent-color: #8b6fff; }
-  .slider-row span { font-size: 11px; font-weight: 500; width: 30px; text-align: right; color: rgba(255,255,255,0.6); }
+  .slider-row label { font-size: 11px; color: rgba(255,255,255,0.32); flex: none; width: 50px; letter-spacing: 0.03em; }
+  .slider-row input[type=range] { flex: 1; accent-color: #7a5af8; }
+  .slider-row span { font-size: 11px; font-weight: 500; width: 30px; text-align: right; color: rgba(255,255,255,0.55); }
 
   #hint {
-    position: fixed;
-    bottom: 24px; left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 11px;
-    color: rgba(255,255,255,0.22);
-    letter-spacing: 0.06em;
-    pointer-events: none;
-    transition: opacity 1s;
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    z-index: 10; font-family: -apple-system, sans-serif; font-size: 11px;
+    color: rgba(255,255,255,0.18); letter-spacing: 0.07em; pointer-events: none; transition: opacity 1.5s;
   }
 </style>
 </head>
@@ -104,22 +75,23 @@
 
 <button id="toggle" aria-label="Toggle settings">⚙</button>
 <div id="panel">
-  <div id="ball-count">15 balls</div>
+  <div id="ball-count">18 balls</div>
   <div class="btn-row">
     <button class="pill" id="add">+ Ball</button>
     <button class="pill" id="remove">− Ball</button>
     <button class="pill" id="pause">Pause</button>
     <button class="pill" id="reset">Reset</button>
+    <button class="pill" id="trail-btn">Trail: off</button>
   </div>
   <div class="slider-row">
     <label for="gravity">Gravity</label>
-    <input type="range" id="gravity" min="-0.3" max="0.8" step="0.05" value="0.15" />
-    <span id="gravity-out">0.15</span>
+    <input type="range" id="gravity" min="-0.3" max="0.8" step="0.02" value="0" />
+    <span id="gravity-out">0.00</span>
   </div>
   <div class="slider-row">
     <label for="speed">Speed</label>
-    <input type="range" id="speed" min="0.2" max="3" step="0.1" value="1" />
-    <span id="speed-out">1.0</span>
+    <input type="range" id="speed" min="0.1" max="2.5" step="0.05" value="0.5" />
+    <span id="speed-out">0.5</span>
   </div>
   <div class="slider-row">
     <label for="pull">Well</label>
@@ -127,7 +99,7 @@
     <span id="pull-out">1.0</span>
   </div>
 </div>
-<div id="hint">click anywhere to move the gravity well</div>
+<div id="hint">click anywhere · move the gravity well</div>
 
 <script>
 (function () {
@@ -144,31 +116,46 @@
   let a_quad, a_center, a_radius, a_color;
   let quadBuf, centerBuf, radiusBuf, colorBuf;
 
-  // ── palette ──────────────────────────────────────────────────────────────
+  // ── jewel palette (deeper / richer than before) ──────────────────────────
   const PALETTE = [
-    [0.47, 0.31, 1.00],
-    [1.00, 0.24, 0.71],
-    [0.00, 0.78, 0.86],
-    [1.00, 0.78, 0.16],
-    [1.00, 0.39, 0.24],
-    [0.31, 0.86, 0.47],
-    [0.71, 0.24, 1.00],
-    [0.24, 0.63, 1.00],
+    [0.36, 0.18, 0.95],   // royal indigo
+    [0.88, 0.14, 0.58],   // deep magenta
+    [0.00, 0.70, 0.82],   // teal
+    [0.95, 0.72, 0.05],   // deep gold
+    [0.92, 0.32, 0.12],   // burnt orange
+    [0.12, 0.78, 0.48],   // emerald
+    [0.60, 0.10, 0.90],   // deep violet
+    [0.08, 0.44, 0.90],   // cobalt
+    [0.92, 0.38, 0.72],   // orchid
+    [0.05, 0.60, 0.55],   // dark aqua
   ];
 
-  function rgb(c) {
+  function toRGB(c) {
     return `${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.round(c[2]*255)}`;
   }
 
-  // ── stars ────────────────────────────────────────────────────────────────
-  const STARS = Array.from({ length: 220 }, () => ({
+  // ── stars + nebula (static) ───────────────────────────────────────────────
+  const STARS = Array.from({ length: 280 }, () => ({
     fx: Math.random(), fy: Math.random(),
-    r:  Math.random() * 1.1 + 0.2,
-    a:  Math.random() * 0.55 + 0.15,
+    r:  Math.random() * 0.9 + 0.15,
+    a:  Math.random() * 0.45 + 0.1,
   }));
 
   function drawStars() {
     sCtx.clearRect(0, 0, W, H);
+    // subtle nebula blobs
+    [
+      { cx: 0.72, cy: 0.28, r: 0.38, color: '30,10,70', a: 0.13 },
+      { cx: 0.18, cy: 0.62, r: 0.30, color: '5,20,60',  a: 0.10 },
+    ].forEach(n => {
+      const g = sCtx.createRadialGradient(n.cx*W, n.cy*H, 0, n.cx*W, n.cy*H, n.r*Math.max(W,H));
+      g.addColorStop(0,   `rgba(${n.color},${n.a})`);
+      g.addColorStop(0.5, `rgba(${n.color},${(n.a*0.4).toFixed(3)})`);
+      g.addColorStop(1,   `rgba(${n.color},0)`);
+      sCtx.fillStyle = g;
+      sCtx.fillRect(0, 0, W, H);
+    });
+    // stars
     for (const s of STARS) {
       sCtx.beginPath();
       sCtx.arc(s.fx * W, s.fy * H, s.r, 0, Math.PI * 2);
@@ -177,19 +164,22 @@
     }
   }
 
-  // ── parallax bg balls ────────────────────────────────────────────────────
-  const BG_N = 55;
+  // ── floating parallax bg balls ────────────────────────────────────────────
+  const BG_N = 60;
   let bgBalls = [];
 
   function makeBgBall() {
-    const r = Math.random() * 5 + 2;
+    const angle = Math.random() * Math.PI * 2;
+    const spd   = Math.random() * 0.22 + 0.04;
     return {
       x: Math.random() * W, y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.45,
-      vy: (Math.random() - 0.5) * 0.45,
-      r,
+      vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
+      r:  Math.random() * 3.5 + 1.2,
       color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-      alpha: Math.random() * 0.18 + 0.06,
+      alpha: Math.random() * 0.13 + 0.03,
+      phase: Math.random() * Math.PI * 2,
+      phaseRate: (Math.random() - 0.5) * 0.004,
+      driftAmp: Math.random() * 0.18 + 0.04,
     };
   }
 
@@ -199,130 +189,143 @@
   let particles = [];
 
   function spawnParticles(x, y, cA, cB) {
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 20; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const spd   = rand(1.5, 7);
+      const spd   = rand(1, 6.5);
       particles.push({
         x, y,
-        vx: Math.cos(angle) * spd,
-        vy: Math.sin(angle) * spd,
-        r:  rand(1.5, 4.5),
+        vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
+        r:    rand(1, 3.5),
         color: Math.random() < 0.5 ? cA : cB,
         life:  1.0,
-        decay: rand(0.022, 0.048),
+        decay: rand(0.02, 0.045),
       });
     }
   }
 
   // ── gravity well ─────────────────────────────────────────────────────────
-  let wellX = 0, wellY = 0;
-  let wellPulse = 0;
-  let wellScale = 1.0;         // controlled by slider
-  const WELL_BASE  = 5500;
-  const WELL_MIN_DIST = 45;
-  const WELL_MAX_FORCE = 0.55;
+  let wellX = 0, wellY = 0, wellPulse = 0, wellScale = 1.0;
+  const WELL_BASE = 4500, WELL_MIN = 40, WELL_MAX_F = 0.50;
 
-  // ── bg canvas draw ───────────────────────────────────────────────────────
+  // ── bg canvas: bg balls, well, trails, halos, particles ──────────────────
   function stepBg(grav, speedMul) {
     bCtx.clearRect(0, 0, W, H);
 
-    // parallax balls
+    // floating bg balls — gentle sine steering, wrap edges
     for (const b of bgBalls) {
-      b.vy += grav * 0.12;
-      b.x  += b.vx * speedMul;
-      b.y  += b.vy * speedMul;
-      if (b.x - b.r < 0)  { b.x = b.r;     b.vx =  Math.abs(b.vx); }
-      if (b.x + b.r > W)  { b.x = W - b.r; b.vx = -Math.abs(b.vx); }
-      if (b.y - b.r < 0)  { b.y = b.r;     b.vy =  Math.abs(b.vy); }
-      if (b.y + b.r > H)  { b.y = H - b.r; b.vy = -Math.abs(b.vy) * 0.85; b.vx *= 0.99; }
+      b.phase += b.phaseRate;
+      const tx = Math.cos(b.phase) * b.driftAmp;
+      const ty = Math.sin(b.phase * 1.3) * b.driftAmp * 0.5;
+      b.vx += (tx - b.vx) * 0.008;
+      b.vy += (ty - b.vy) * 0.008;
+      b.x += b.vx * speedMul;
+      b.y += b.vy * speedMul;
+      const wrap = b.r * 6;
+      if (b.x < -wrap) b.x = W + wrap;
+      if (b.x > W + wrap) b.x = -wrap;
+      if (b.y < -wrap) b.y = H + wrap;
+      if (b.y > H + wrap) b.y = -wrap;
 
-      const c = rgb(b.color);
-      const g = bCtx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 3.5);
-      g.addColorStop(0,    `rgba(${c},${(b.alpha * 2.2).toFixed(2)})`);
-      g.addColorStop(0.35, `rgba(${c},${b.alpha.toFixed(2)})`);
+      const c = toRGB(b.color);
+      const g = bCtx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 4);
+      g.addColorStop(0,    `rgba(${c},${(b.alpha*2).toFixed(2)})`);
+      g.addColorStop(0.4,  `rgba(${c},${b.alpha.toFixed(2)})`);
       g.addColorStop(1,    `rgba(${c},0)`);
       bCtx.beginPath();
-      bCtx.arc(b.x, b.y, b.r * 3.5, 0, Math.PI * 2);
+      bCtx.arc(b.x, b.y, b.r * 4, 0, Math.PI * 2);
       bCtx.fillStyle = g;
       bCtx.fill();
     }
 
-    // gravity well rings
-    wellPulse = (wellPulse + 0.016) % 1;
+    // gravity well
+    wellPulse = (wellPulse + 0.015) % 1;
     for (let i = 0; i < 4; i++) {
       const phase  = (wellPulse + i / 4) % 1;
-      const radius = phase * 100;
-      const alpha  = (1 - phase) * 0.38;
+      const radius = phase * 110;
+      const alpha  = (1 - phase) * 0.32;
       bCtx.beginPath();
       bCtx.arc(wellX, wellY, radius, 0, Math.PI * 2);
-      bCtx.strokeStyle = `rgba(200,165,255,${alpha.toFixed(2)})`;
-      bCtx.lineWidth = 1.5;
+      bCtx.strokeStyle = `rgba(180,150,255,${alpha.toFixed(2)})`;
+      bCtx.lineWidth = 1.2;
       bCtx.stroke();
     }
-    // well core
-    const cg = bCtx.createRadialGradient(wellX, wellY, 0, wellX, wellY, 20);
-    cg.addColorStop(0,   'rgba(255,248,255,0.96)');
-    cg.addColorStop(0.3, 'rgba(190,150,255,0.55)');
-    cg.addColorStop(1,   'rgba(110,70,255,0)');
-    bCtx.beginPath();
-    bCtx.arc(wellX, wellY, 20, 0, Math.PI * 2);
-    bCtx.fillStyle = cg;
-    bCtx.fill();
+    const cg = bCtx.createRadialGradient(wellX, wellY, 0, wellX, wellY, 16);
+    cg.addColorStop(0,   'rgba(240,230,255,0.95)');
+    cg.addColorStop(0.35,'rgba(160,120,255,0.5)');
+    cg.addColorStop(1,   'rgba(80,40,200,0)');
+    bCtx.beginPath(); bCtx.arc(wellX, wellY, 16, 0, Math.PI*2);
+    bCtx.fillStyle = cg; bCtx.fill();
 
-    // comet tails (velocity-direction trails)
+    // falling-sand trails
+    if (showTrail) {
+      for (const b of balls) {
+        const trail = b.trail;
+        const n = trail.length;
+        if (n < 2) continue;
+        const c = toRGB(b.color);
+        for (let i = 0; i < n; i++) {
+          const t   = i / n;                        // 0=newest, 1=oldest
+          const age = 1 - t;                        // flip: 1=newest
+          const entry = trail[i];
+          const fallY = t * t * 28;                 // older entries fall further
+          const jitterX = entry.jx * t * t * 6;    // horizontal sand spread
+          const drawX = entry.x + jitterX;
+          const drawY = entry.y + fallY;
+          const alpha = Math.pow(age, 1.8) * 0.62;
+          const dotR  = 1.5 + age * 2.5;
+          bCtx.beginPath();
+          bCtx.arc(drawX, drawY, dotR, 0, Math.PI * 2);
+          bCtx.fillStyle = `rgba(${c},${alpha.toFixed(2)})`;
+          bCtx.fill();
+        }
+      }
+    }
+
+    // comet tails (velocity-direction motion blur)
     for (const b of balls) {
-      const spd = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
-      if (spd < 0.4) continue;
+      const spd = Math.sqrt(b.vx*b.vx + b.vy*b.vy);
+      if (spd < 0.5) continue;
       const nx = b.vx / spd, ny = b.vy / spd;
-      const tailLen = Math.min(spd * 5.5, 90);
-      const c = rgb(b.color);
-      const steps = 12;
+      const tailLen = Math.min(spd * 4.5, 70);
+      const c = toRGB(b.color);
+      const steps = 10;
       for (let s = 1; s <= steps; s++) {
         const t  = s / steps;
         const tx = b.x - nx * tailLen * t;
         const ty = b.y - ny * tailLen * t;
-        const tr = Math.max(b.r * (1 - t) * 0.58, 1);
-        const ta = (1 - t) * 0.5;
-        bCtx.beginPath();
-        bCtx.arc(tx, ty, tr, 0, Math.PI * 2);
-        bCtx.fillStyle = `rgba(${c},${ta.toFixed(2)})`;
-        bCtx.fill();
+        const tr = Math.max(b.r * (1 - t) * 0.52, 0.8);
+        const ta = (1 - t) * 0.45;
+        bCtx.beginPath(); bCtx.arc(tx, ty, tr, 0, Math.PI*2);
+        bCtx.fillStyle = `rgba(${c},${ta.toFixed(2)})`; bCtx.fill();
       }
     }
 
-    // glow halos
+    // soft glow halos
     for (const b of balls) {
-      const c    = rgb(b.color);
-      const glow = bCtx.createRadialGradient(b.x, b.y, b.r * 0.4, b.x, b.y, b.r * 4);
-      glow.addColorStop(0,   `rgba(${c},0.30)`);
-      glow.addColorStop(0.5, `rgba(${c},0.10)`);
+      const c    = toRGB(b.color);
+      const glow = bCtx.createRadialGradient(b.x, b.y, b.r*0.5, b.x, b.y, b.r*3.5);
+      glow.addColorStop(0,   `rgba(${c},0.22)`);
+      glow.addColorStop(0.6, `rgba(${c},0.07)`);
       glow.addColorStop(1,   `rgba(${c},0)`);
-      bCtx.beginPath();
-      bCtx.arc(b.x, b.y, b.r * 4, 0, Math.PI * 2);
-      bCtx.fillStyle = glow;
-      bCtx.fill();
+      bCtx.beginPath(); bCtx.arc(b.x, b.y, b.r*3.5, 0, Math.PI*2);
+      bCtx.fillStyle = glow; bCtx.fill();
     }
 
-    // collision particles
+    // collision sparks
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
-      p.x   += p.vx;
-      p.y   += p.vy;
-      p.vx  *= 0.92;
-      p.vy  *= 0.92;
+      p.x += p.vx; p.y += p.vy;
+      p.vx *= 0.91; p.vy *= 0.91;
       p.life -= p.decay;
       if (p.life <= 0) { particles.splice(i, 1); continue; }
-
-      const c    = rgb(p.color);
-      const a    = p.life;
-      const grad = bCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
-      grad.addColorStop(0,   `rgba(255,255,255,${a.toFixed(2)})`);
-      grad.addColorStop(0.25,`rgba(${c},${a.toFixed(2)})`);
-      grad.addColorStop(1,   `rgba(${c},0)`);
-      bCtx.beginPath();
-      bCtx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
-      bCtx.fillStyle = grad;
-      bCtx.fill();
+      const c = toRGB(p.color);
+      const a = p.life;
+      const g = bCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
+      g.addColorStop(0,    `rgba(255,255,255,${a.toFixed(2)})`);
+      g.addColorStop(0.3,  `rgba(${c},${a.toFixed(2)})`);
+      g.addColorStop(1,    `rgba(${c},0)`);
+      bCtx.beginPath(); bCtx.arc(p.x, p.y, p.r*3, 0, Math.PI*2);
+      bCtx.fillStyle = g; bCtx.fill();
     }
   }
 
@@ -337,49 +340,77 @@
       attribute float a_radius;
       attribute vec3 a_color;
       uniform vec2 u_res;
-      varying vec2 v_local;
+      varying vec2 v_uv;
       varying vec3 v_color;
       void main() {
-        v_local = a_quad;
+        v_uv   = a_quad;
         v_color = a_color;
         vec2 pos  = a_center + a_quad * a_radius;
         vec2 clip = (pos / u_res) * 2.0 - 1.0;
         gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
       }
     `;
+
+    // Glossy candy-gel sphere shader
     const fsrcBody = `
       precision mediump float;
-      varying vec2 v_local;
-      varying vec3 v_color;
+      varying vec2  v_uv;
+      varying vec3  v_color;
       void main() {
-        float d     = length(v_local);
+        float d2 = dot(v_uv, v_uv);
+        if (d2 > 1.0) discard;
+
         float edge  = EDGE_EXPR;
+        float d     = sqrt(d2);
         float alpha = 1.0 - smoothstep(1.0 - edge, 1.0, d);
-        if (alpha <= 0.0) discard;
-        vec2  lDir   = normalize(vec2(-0.45, -0.55));
-        float lit    = clamp(dot(-v_local, lDir), 0.0, 1.0);
-        vec3  shaded = v_color * (0.68 + 0.46 * lit);
-        float hi     = smoothstep(0.76, 1.0, lit) * (1.0 - smoothstep(0.5, 1.0, d));
-        shaded = mix(shaded, vec3(1.0), hi * 0.60);
-        gl_FragColor = vec4(shaded, alpha);
+
+        // reconstruct sphere normal
+        vec3 N = normalize(vec3(v_uv, sqrt(max(0.0, 1.0 - d2))));
+
+        // key light (top-left-front)
+        vec3 L1 = normalize(vec3(-0.55, -0.70, 0.75));
+        float diff1 = max(dot(N, L1), 0.0);
+
+        // fill light (bottom-right, warm tint)
+        vec3 L2 = normalize(vec3(0.50, 0.55, 0.45));
+        float diff2 = max(dot(N, L2), 0.0) * 0.22;
+
+        // saturate color slightly
+        float lum = dot(v_color, vec3(0.299, 0.587, 0.114));
+        vec3 sat  = mix(vec3(lum), v_color, 1.35);
+
+        vec3 col = sat * (0.18 + 0.72 * diff1 + diff2);
+
+        // sharp specular highlight (candy gloss)
+        float spec = pow(max(dot(N, L1), 0.0), 22.0);
+        col = mix(col, vec3(1.0), spec * 0.88);
+
+        // soft secondary highlight (colored, fill side)
+        float spec2 = pow(max(dot(N, L2), 0.0), 8.0) * 0.3;
+        col = mix(col, v_color * 1.6, spec2);
+
+        // fresnel rim — subtle dark edge gives 3-D pop
+        float fresnel = 1.0 - N.z;
+        col  *= (1.0 - fresnel * 0.45);
+        alpha *= (1.0 - fresnel * 0.25);
+
+        gl_FragColor = vec4(clamp(col, 0.0, 1.0), alpha);
       }
     `;
+
     const stdDeriv = gl.getExtension('OES_standard_derivatives');
     const fsrc = stdDeriv
-      ? '#extension GL_OES_standard_derivatives : enable\n' + fsrcBody.replace('EDGE_EXPR', 'fwidth(d) + 0.005')
-      : fsrcBody.replace('EDGE_EXPR', '0.03');
+      ? '#extension GL_OES_standard_derivatives : enable\n' + fsrcBody.replace('EDGE_EXPR', 'fwidth(d) + 0.004')
+      : fsrcBody.replace('EDGE_EXPR', '0.025');
 
     function compile(type, src) {
       const s = gl.createShader(type);
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      return s;
+      gl.shaderSource(s, src); gl.compileShader(s); return s;
     }
     prog = gl.createProgram();
     gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsrc));
     gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsrc));
-    gl.linkProgram(prog);
-    gl.useProgram(prog);
+    gl.linkProgram(prog); gl.useProgram(prog);
 
     quadBuf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
@@ -397,9 +428,7 @@
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    centerBuf = gl.createBuffer();
-    radiusBuf = gl.createBuffer();
-    colorBuf  = gl.createBuffer();
+    centerBuf = gl.createBuffer(); radiusBuf = gl.createBuffer(); colorBuf = gl.createBuffer();
     ext = gl.getExtension('ANGLE_instanced_arrays');
 
     if (ext) {
@@ -418,36 +447,29 @@
       gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, 0, 0);
       ext.vertexAttribDivisorANGLE(a_color, 1);
     }
-
     return true;
   }
 
   // ── resize ────────────────────────────────────────────────────────────────
   function resize() {
-    W   = window.innerWidth;
-    H   = window.innerHeight;
+    W = window.innerWidth; H = window.innerHeight;
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-
     starsEl.width = W; starsEl.height = H;
     bgEl.width    = W; bgEl.height    = H;
     glEl.width    = W * dpr; glEl.height = H * dpr;
-    glEl.style.width  = W + 'px';
-    glEl.style.height = H + 'px';
-
-    if (gl) {
-      gl.viewport(0, 0, glEl.width, glEl.height);
-      gl.uniform2f(u_res, W, H);
-    }
+    glEl.style.width = W + 'px'; glEl.style.height = H + 'px';
+    if (gl) { gl.viewport(0, 0, glEl.width, glEl.height); gl.uniform2f(u_res, W, H); }
     drawStars();
   }
-
   window.addEventListener('resize', resize);
 
-  // ── simulation ────────────────────────────────────────────────────────────
-  let gravity  = 0.15;
-  let speedMul = 1.0;
-  const DAMPING  = 0.82;
-  const MAX_SPEED = 22;
+  // ── simulation state ──────────────────────────────────────────────────────
+  let gravity  = 0;
+  let speedMul = 0.5;
+  let showTrail = false;
+  const DAMPING   = 0.80;
+  const MAX_SPEED = 18;
+  const TRAIL_MAX = 35;
   let balls     = [];
   let running   = true;
   let colliding = new Set();
@@ -455,22 +477,21 @@
   function rand(a, b) { return Math.random() * (b - a) + a; }
 
   function makeBall() {
-    const r = rand(14, 38);
+    const r     = rand(7, 20);
+    const angle = Math.random() * Math.PI * 2;
+    const spd   = rand(2, 6);
     return {
-      x: rand(r, W - r),
-      y: rand(r, H * 0.45),
-      vx: rand(-7, 7),
-      vy: rand(-5, 3),
+      x: rand(r, W - r), y: rand(r, H * 0.6),
+      vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
       r,
       color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+      trail: [],
     };
   }
 
   function reset(n) {
     balls = Array.from({ length: n }, makeBall);
-    colliding.clear();
-    particles = [];
-    updateCount();
+    colliding.clear(); particles = []; updateCount();
   }
 
   function updateCount() {
@@ -481,38 +502,28 @@
   function drawGL() {
     const n = balls.length;
     if (!n) return;
-
     const centers = new Float32Array(n * 2);
     const radii   = new Float32Array(n);
     const colors  = new Float32Array(n * 3);
-
     for (let i = 0; i < n; i++) {
       const b = balls[i];
-      centers[i*2]   = b.x; centers[i*2+1] = b.y;
-      radii[i]        = b.r;
-      colors[i*3]    = b.color[0]; colors[i*3+1] = b.color[1]; colors[i*3+2] = b.color[2];
+      centers[i*2] = b.x; centers[i*2+1] = b.y;
+      radii[i]      = b.r;
+      colors[i*3]  = b.color[0]; colors[i*3+1] = b.color[1]; colors[i*3+2] = b.color[2];
     }
-
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     gl.useProgram(prog);
     gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
     gl.enableVertexAttribArray(a_quad);
     gl.vertexAttribPointer(a_quad, 2, gl.FLOAT, false, 0, 0);
-
     if (ext) {
-      gl.bindBuffer(gl.ARRAY_BUFFER, centerBuf);
-      gl.bufferData(gl.ARRAY_BUFFER, centers, gl.DYNAMIC_DRAW);
-      gl.bindBuffer(gl.ARRAY_BUFFER, radiusBuf);
-      gl.bufferData(gl.ARRAY_BUFFER, radii, gl.DYNAMIC_DRAW);
-      gl.bindBuffer(gl.ARRAY_BUFFER, colorBuf);
-      gl.bufferData(gl.ARRAY_BUFFER, colors, gl.DYNAMIC_DRAW);
+      gl.bindBuffer(gl.ARRAY_BUFFER, centerBuf); gl.bufferData(gl.ARRAY_BUFFER, centers, gl.DYNAMIC_DRAW);
+      gl.bindBuffer(gl.ARRAY_BUFFER, radiusBuf); gl.bufferData(gl.ARRAY_BUFFER, radii,   gl.DYNAMIC_DRAW);
+      gl.bindBuffer(gl.ARRAY_BUFFER, colorBuf);  gl.bufferData(gl.ARRAY_BUFFER, colors,  gl.DYNAMIC_DRAW);
       ext.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, n);
     } else {
       for (let i = 0; i < n; i++) {
-        gl.disableVertexAttribArray(a_center);
-        gl.disableVertexAttribArray(a_radius);
-        gl.disableVertexAttribArray(a_color);
+        gl.disableVertexAttribArray(a_center); gl.disableVertexAttribArray(a_radius); gl.disableVertexAttribArray(a_color);
         gl.vertexAttrib2f(a_center, centers[i*2], centers[i*2+1]);
         gl.vertexAttrib1f(a_radius, radii[i]);
         gl.vertexAttrib3f(a_color, colors[i*3], colors[i*3+1], colors[i*3+2]);
@@ -522,43 +533,48 @@
   }
 
   function step() {
-    const wellStrength = WELL_BASE * wellScale;
+    const ws = WELL_BASE * wellScale;
 
     for (const b of balls) {
-      // gravity well pull
-      const dx   = wellX - b.x;
-      const dy   = wellY - b.y;
-      const dist = Math.max(Math.sqrt(dx * dx + dy * dy), WELL_MIN_DIST);
-      const f    = Math.min(wellStrength / (dist * dist), WELL_MAX_FORCE);
+      // gravity well
+      const dx   = wellX - b.x, dy = wellY - b.y;
+      const dist = Math.max(Math.sqrt(dx*dx + dy*dy), WELL_MIN);
+      const f    = Math.min(ws / (dist * dist), WELL_MAX_F);
       b.vx += (dx / dist) * f;
       b.vy += (dy / dist) * f;
 
-      // downward gravity
       b.vy += gravity;
 
-      // velocity cap
-      const spd = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
-      if (spd > MAX_SPEED) { b.vx = b.vx / spd * MAX_SPEED; b.vy = b.vy / spd * MAX_SPEED; }
+      // cap speed
+      const spd = Math.sqrt(b.vx*b.vx + b.vy*b.vy);
+      if (spd > MAX_SPEED) { b.vx = b.vx/spd*MAX_SPEED; b.vy = b.vy/spd*MAX_SPEED; }
 
-      b.x += b.vx * speedMul;
-      b.y += b.vy * speedMul;
+      b.x += b.vx * speedMul; b.y += b.vy * speedMul;
 
       if (b.x - b.r < 0)  { b.x = b.r;     b.vx =  Math.abs(b.vx) * DAMPING; }
       if (b.x + b.r > W)  { b.x = W - b.r; b.vx = -Math.abs(b.vx) * DAMPING; }
       if (b.y - b.r < 0)  { b.y = b.r;     b.vy =  Math.abs(b.vy) * DAMPING; }
       if (b.y + b.r > H)  { b.y = H - b.r; b.vy = -Math.abs(b.vy) * DAMPING; b.vx *= 0.98; }
+
+      // trail recording
+      if (showTrail) {
+        b.trail.unshift({ x: b.x, y: b.y, jx: rand(-1, 1) });
+        if (b.trail.length > TRAIL_MAX) b.trail.pop();
+      } else if (b.trail.length) {
+        b.trail = [];
+      }
     }
 
-    // collision spark detection
+    // collision sparks
     for (let i = 0; i < balls.length; i++) {
       for (let j = i + 1; j < balls.length; j++) {
         const key = i * 10000 + j;
         const a = balls[i], b = balls[j];
         const dx = b.x - a.x, dy = b.y - a.y;
-        const touching = dx*dx + dy*dy < (a.r + b.r) * (a.r + b.r);
+        const touching = dx*dx + dy*dy < (a.r+b.r)*(a.r+b.r);
         if (touching && !colliding.has(key)) {
           colliding.add(key);
-          spawnParticles((a.x + b.x) / 2, (a.y + b.y) / 2, a.color, b.color);
+          spawnParticles((a.x+b.x)/2, (a.y+b.y)/2, a.color, b.color);
         } else if (!touching) {
           colliding.delete(key);
         }
@@ -571,24 +587,25 @@
   }
 
   // ── UI ────────────────────────────────────────────────────────────────────
-  const gravIn  = document.getElementById('gravity');
-  const gravOut = document.getElementById('gravity-out');
-  const spdIn   = document.getElementById('speed');
-  const spdOut  = document.getElementById('speed-out');
-  const pullIn  = document.getElementById('pull');
-  const pullOut = document.getElementById('pull-out');
-
-  gravIn.oninput = () => { gravity   = parseFloat(gravIn.value);  gravOut.textContent = gravity.toFixed(2); };
-  spdIn.oninput  = () => { speedMul  = parseFloat(spdIn.value);   spdOut.textContent  = speedMul.toFixed(1); };
-  pullIn.oninput = () => { wellScale = parseFloat(pullIn.value);   pullOut.textContent = wellScale.toFixed(1); };
+  function wireSlider(id, outId, cb) {
+    const el = document.getElementById(id), out = document.getElementById(outId);
+    el.oninput = () => { const v = parseFloat(el.value); out.textContent = v.toFixed(v < 1 ? 2 : 1); cb(v); };
+  }
+  wireSlider('gravity', 'gravity-out', v => gravity  = v);
+  wireSlider('speed',   'speed-out',   v => speedMul = v);
+  wireSlider('pull',    'pull-out',    v => wellScale = v);
 
   document.getElementById('add').onclick    = () => { balls.push(makeBall()); updateCount(); };
-  document.getElementById('remove').onclick = () => { if (balls.length > 0) { balls.pop(); updateCount(); } };
-  document.getElementById('reset').onclick  = () => reset(15);
+  document.getElementById('remove').onclick = () => { if (balls.length) { balls.pop(); updateCount(); } };
+  document.getElementById('reset').onclick  = () => reset(18);
   document.getElementById('pause').onclick  = function () {
-    running = !running;
-    this.textContent = running ? 'Pause' : 'Play';
+    running = !running; this.textContent = running ? 'Pause' : 'Play';
     if (running) requestAnimationFrame(step);
+  };
+  document.getElementById('trail-btn').onclick = function () {
+    showTrail = !showTrail;
+    this.textContent = showTrail ? 'Trail: on' : 'Trail: off';
+    this.classList.toggle('on', showTrail);
   };
 
   document.getElementById('toggle').onclick = function () {
@@ -596,24 +613,19 @@
     this.classList.toggle('active');
   };
 
-  // click to relocate well (ignore UI clicks)
   document.addEventListener('click', (e) => {
     if (e.target.closest('#panel') || e.target.closest('#toggle')) return;
-    wellX = e.clientX;
-    wellY = e.clientY;
-    wellPulse = 0;
+    wellX = e.clientX; wellY = e.clientY; wellPulse = 0;
   });
 
-  // fade hint after 4s
-  setTimeout(() => { document.getElementById('hint').style.opacity = 0; }, 4000);
+  setTimeout(() => { document.getElementById('hint').style.opacity = 0; }, 4500);
 
   // ── boot ──────────────────────────────────────────────────────────────────
   initGL();
   resize();
-  wellX = W / 2;
-  wellY = H / 2;
+  wellX = W / 2; wellY = H / 2;
   initBgBalls();
-  reset(15);
+  reset(18);
   requestAnimationFrame(step);
 
 })();
