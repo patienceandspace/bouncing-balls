@@ -240,7 +240,7 @@
       gl.bufferData(gl.ARRAY_BUFFER, radii, gl.DYNAMIC_DRAW);
       gl.bindBuffer(gl.ARRAY_BUFFER, colorBuf);
       gl.bufferData(gl.ARRAY_BUFFER, colors, gl.DYNAMIC_DRAW);
-      gl.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, n);
+      ext.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, n);
     } else {
       for (let i = 0; i < n; i++) {
         gl.disableVertexAttribArray(a_center);
