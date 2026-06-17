@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bouncing Balls (WebGL)</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --panel: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --border: #e3e3e0;
+    --accent: #1a1a1a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+  .wrap { width: 100%; max-width: 720px; }
+  h1 { font-size: 18px; font-weight: 600; margin: 0 0 16px; }
+  .controls {
+    display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center;
+  }
+  button {
+    font: inherit;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button:hover { background: #f0f0ed; }
+  #count { font-size: 13px; color: var(--muted); margin-left: auto; }
+  .slider-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .slider-row label { font-size: 14px; color: var(--muted); }
+  .slider-row input { flex: 1; }
+  .slider-row span { font-size: 14px; font-weight: 500; min-width: 36px; text-align: right; }
+  canvas {
+    width: 100%;
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel);
+  }
+  #fallback { display: none; font-size: 13px; color: #b00020; margin: 8px 0 0; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Bouncing Balls</h1>
+  <h2 class="sr-only">A WebGL animation of shaded balls bouncing inside a box with adjustable gravity</h2>
+  <div class="controls">
+    <button id="add">Add ball</button>
+    <button id="remove">Remove ball</button>
+    <button id="pause">Pause</button>
+    <button id="reset">Reset</button>
+    <span id="count">12 balls</span>
+  </div>
+  <div class="slider-row">
+    <label for="gravity">Gravity</label>
+    <input type="range" id="gravity" min="-0.5" max="1.2" step="0.05" value="0.35" />
+    <span id="gravity-out">0.35</span>
+  </div>
+  <canvas id="stage"></canvas>
+  <p id="fallback">WebGL isn't available in this browser, so the animation can't run.</p>
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById('stage');
+  const countEl = document.getElementById('count');
+  const gravityInput = document.getElementById('gravity');
+  const gravityOut = document.getElementById('gravity-out');
+  const W = 660, H = 380;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.height = H + 'px';
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) {
+    document.getElementById('fallback').style.display = 'block';
+    return;
+  }
+
+  const vsrc = `
+    attribute vec2 a_quad;
+    attribute vec2 a_center;
+    attribute float a_radius;
+    attribute vec3 a_color;
+    uniform vec2 u_res;
+    varying vec2 v_local;
+    varying vec3 v_color;
+    void main() {
+      v_local = a_quad;
+      v_color = a_color;
+      vec2 pos = a_center + a_quad * a_radius;
+      vec2 clip = (pos / u_res) * 2.0 - 1.0;
+      gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
+    }
+  `;
+
+  const fsrcBody = `
+    precision mediump float;
+    varying vec2 v_local;
+    varying vec3 v_color;
+    void main() {
+      float d = length(v_local);
+      float edge = EDGE_EXPR;
+      float alpha = 1.0 - smoothstep(1.0 - edge, 1.0, d);
+      if (alpha <= 0.0) discard;
+      vec2 lightDir = normalize(vec2(-0.45, -0.55));
+      float lit = clamp(dot(-v_local, lightDir), 0.0, 1.0);
+      vec3 shaded = v_color * (0.72 + 0.42 * lit);
+      float hi = smoothstep(0.78, 1.0, lit) * (1.0 - smoothstep(0.55, 1.0, d));
+      shaded = mix(shaded, vec3(1.0), hi * 0.55);
+      gl_FragColor = vec4(shaded, alpha);
+    }
+  `;
+
+  const stdDeriv = gl.getExtension('OES_standard_derivatives');
+  const fsrc = stdDeriv
+    ? '#extension GL_OES_standard_derivatives : enable\n' + fsrcBody.replace('EDGE_EXPR', 'fwidth(d) + 0.005')
+    : fsrcBody.replace('EDGE_EXPR', '0.03');
+
+  function compile(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsrc));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsrc));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  const quad = new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]);
+  const quadBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, quad, gl.STATIC_DRAW);
+  const a_quad = gl.getAttribLocation(prog, 'a_quad');
+  gl.enableVertexAttribArray(a_quad);
+  gl.vertexAttribPointer(a_quad, 2, gl.FLOAT, false, 0, 0);
+
+  const a_center = gl.getAttribLocation(prog, 'a_center');
+  const a_radius = gl.getAttribLocation(prog, 'a_radius');
+  const a_color = gl.getAttribLocation(prog, 'a_color');
+  const u_res = gl.getUniformLocation(prog, 'u_res');
+
+  gl.uniform2f(u_res, W, H);
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+  const palette = [
+    [0.498,0.467,0.867],[0.114,0.620,0.459],[0.847,0.353,0.188],
+    [0.831,0.325,0.494],[0.216,0.541,0.867],[0.388,0.600,0.133],
+    [0.937,0.624,0.153],[0.886,0.294,0.290]
+  ];
+  let gravity = 0.35;
+  const damping = 0.82;
+  let balls = [];
+  let running = true;
+
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+
+  function makeBall() {
+    const r = rand(12, 26);
+    return {
+      x: rand(r, W - r),
+      y: rand(r, H / 2),
+      vx: rand(-4, 4),
+      vy: rand(-2, 2),
+      r: r,
+      color: palette[Math.floor(Math.random() * palette.length)]
+    };
+  }
+
+  function reset(n) {
+    balls = [];
+    for (let i = 0; i < n; i++) balls.push(makeBall());
+    updateCount();
+  }
+  function updateCount() {
+    countEl.textContent = balls.length + (balls.length === 1 ? ' ball' : ' balls');
+  }
+
+  const centerBuf = gl.createBuffer();
+  const radiusBuf = gl.createBuffer();
+  const colorBuf = gl.createBuffer();
+  const ext = gl.getExtension('ANGLE_instanced_arrays');
+
+  if (ext) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, centerBuf);
+    gl.enableVertexAttribArray(a_center);
+    gl.vertexAttribPointer(a_center, 2, gl.FLOAT, false, 0, 0);
+    ext.vertexAttribDivisorANGLE(a_center, 1);
+    gl.bindBuffer(gl.ARRAY_BUFFER, radiusBuf);
+    gl.enableVertexAttribArray(a_radius);
+    gl.vertexAttribPointer(a_radius, 1, gl.FLOAT, false, 0, 0);
+    ext.vertexAttribDivisorANGLE(a_radius, 1);
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuf);
+    gl.enableVertexAttribArray(a_color);
+    gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, 0, 0);
+    ext.vertexAttribDivisorANGLE(a_color, 1);
+  }
+
+  function draw() {
+    const n = balls.length;
+    const centers = new Float32Array(n * 2);
+    const radii = new Float32Array(n);
+    const colors = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) {
+      const b = balls[i];
+      centers[i*2] = b.x; centers[i*2+1] = b.y;
+      radii[i] = b.r;
+      colors[i*3] = b.color[0]; colors[i*3+1] = b.color[1]; colors[i*3+2] = b.color[2];
+    }
+
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+    gl.enableVertexAttribArray(a_quad);
+    gl.vertexAttribPointer(a_quad, 2, gl.FLOAT, false, 0, 0);
+
+    if (ext) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, centerBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, centers, gl.DYNAMIC_DRAW);
+      gl.bindBuffer(gl.ARRAY_BUFFER, radiusBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, radii, gl.DYNAMIC_DRAW);
+      gl.bindBuffer(gl.ARRAY_BUFFER, colorBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, colors, gl.DYNAMIC_DRAW);
+      gl.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, n);
+    } else {
+      for (let i = 0; i < n; i++) {
+        gl.disableVertexAttribArray(a_center);
+        gl.disableVertexAttribArray(a_radius);
+        gl.disableVertexAttribArray(a_color);
+        gl.vertexAttrib2f(a_center, centers[i*2], centers[i*2+1]);
+        gl.vertexAttrib1f(a_radius, radii[i]);
+        gl.vertexAttrib3f(a_color, colors[i*3], colors[i*3+1], colors[i*3+2]);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }
+    }
+  }
+
+  function step() {
+    for (const b of balls) {
+      b.vy += gravity;
+      b.x += b.vx;
+      b.y += b.vy;
+      if (b.x - b.r < 0) { b.x = b.r; b.vx = Math.abs(b.vx) * damping; }
+      if (b.x + b.r > W) { b.x = W - b.r; b.vx = -Math.abs(b.vx) * damping; }
+      if (b.y - b.r < 0) { b.y = b.r; b.vy = Math.abs(b.vy) * damping; }
+      if (b.y + b.r > H) {
+        b.y = H - b.r;
+        b.vy = -Math.abs(b.vy) * damping;
+        b.vx *= 0.98;
+      }
+    }
+    draw();
+    if (running) requestAnimationFrame(step);
+  }
+
+  gravityInput.oninput = function () {
+    gravity = parseFloat(gravityInput.value);
+    gravityOut.textContent = gravity.toFixed(2);
+  };
+  document.getElementById('add').onclick = function () { balls.push(makeBall()); updateCount(); };
+  document.getElementById('remove').onclick = function () { balls.pop(); updateCount(); };
+  document.getElementById('pause').onclick = function (e) {
+    running = !running;
+    e.target.textContent = running ? 'Pause' : 'Play';
+    if (running) requestAnimationFrame(step);
+  };
+  document.getElementById('reset').onclick = function () { reset(12); };
+
+  reset(12);
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>
